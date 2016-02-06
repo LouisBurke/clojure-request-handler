@@ -12,23 +12,25 @@
             [ring.middleware.file-info :refer [wrap-file-info]]
             [compojure.core :refer [defroutes ANY GET POST PUT DELETE]]
             [compojure.route :refer [not-found]]
-            [ring.handler.dump :refer [handle-dump]]))
+            [ring.handler.dump :refer [handle-dump]]
+            [environ.core :refer [env]]))
 
-(def db (or
-         (System/getenv "DATABASE_URL")
-         "jdbc:postgresql://localhost/webdev"))
+;;(def db (or
+;;         (System/getenv "DATABASE_URL")
+;;         "jdbc:postgresql://localhost/webdev"))
 
-;;(let [db-host "localhost"
+;; (let [db-host "localhost"
 ;;      db-port 5432
 ;;      db-name "webdev"]
-;;
-;;  (def db {:classname "org.postgresql.Driver" ; must be in classpath
-;;           :subprotocol "postgresql"
-;;           :subname (str "//" db-host ":" db-port "/" db-name)
-;;                                        ; Any additional keys are passed to the driver
-;;                                        ; as driver-specific properties.
-;;           :user "louis"
-;;           :password ""}))
+
+(def db {:classname "org.postgresql.Driver" ; must be in classpath
+         :subprotocol "postgresql"
+         :subname (env :database-url)
+                                        ; Any additional keys are passed to the driver
+                                        ; as driver-specific properties.
+         :user (env :database-user)
+         :password (env :database-password)})
+;;)
 
 (defn greet [req]
   {:status 200
